@@ -50,6 +50,18 @@ class RentalServiceTest {
     }
 
     @Test
+    void returnsRentedBicycle() {
+        Customer customer = new Customer(1, "Анна");
+        Bicycle bicycle = new Bicycle(10, "Городской", BicycleStatus.AVAILABLE);
+        service.rent(customer, bicycle);
+
+        service.returnBicycle(bicycle);
+
+        assertEquals(BicycleStatus.AVAILABLE, bicycle.getStatus());
+        assertFalse(repository.hasActiveRental(10));
+    }
+
+    @Test
     void doesNotRentBicycleUnderMaintenance() {
         Customer customer = new Customer(1, "Анна");
         Bicycle bicycle = new Bicycle(11, "Горный", BicycleStatus.MAINTENANCE);
