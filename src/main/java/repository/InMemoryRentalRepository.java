@@ -17,11 +17,21 @@ public class InMemoryRentalRepository implements RentalRepository {
     @Override
     public boolean hasActiveRental(int bicycleId) {
         for (Rental rental : rentals) {
-            if (rental.getBicycleId() == bicycleId) {
+            if (rental.getBicycleId() == bicycleId && rental.isActive()) {
                 return true;
             }
         }
         return false;
+    }
+
+    @Override
+    public void closeActiveRental(int bicycleId) {
+        for (Rental rental : rentals) {
+            if (rental.getBicycleId() == bicycleId && rental.isActive()) {
+                rental.close();
+                return;
+            }
+        }
     }
 
     @Override

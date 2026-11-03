@@ -26,4 +26,12 @@ public class RentalService {
         bicycle.setStatus(BicycleStatus.RENTED);
         return rental;
     }
+
+    public void returnBicycle(Bicycle bicycle) {
+        if (!repository.hasActiveRental(bicycle.getId())) {
+            throw new IllegalStateException("Велосипед не находится в аренде и не может быть возвращен");
+        }
+        repository.closeActiveRental(bicycle.getId());
+        bicycle.setStatus(BicycleStatus.AVAILABLE);
+    }
 }

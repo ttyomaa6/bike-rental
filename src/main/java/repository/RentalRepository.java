@@ -7,5 +7,7 @@ public interface RentalRepository {
 
     boolean hasActiveRental(int bicycleId);
 
+    void closeActiveRental(int bicycleId);
+
     int nextId();
 }
