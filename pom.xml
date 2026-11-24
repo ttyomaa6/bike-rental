@@ -14,9 +14,25 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>21</maven.compiler.release>
         <junit.version>5.11.4</junit.version>
+        <checkstyle.plugin.version>3.6.0</checkstyle.plugin.version>
+        <checkstyle.version>14.4.0</checkstyle.version>
+        <slf4j.version>2.0.19</slf4j.version>
+        <logback.version>1.6.6</logback.version>
     </properties>
 
     <dependencies>
+        <!-- Logging: SLF4J — интерфейс (фасад), Logback — реализация -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -38,6 +54,40 @@
                 <version>3.5.2</version>
             </plugin>
 
+            <!-- Static Analysis: mvn checkstyle:check -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${checkstyle.plugin.version}</version>
+                <dependencies>
+                    <!-- Плагин по умолчанию использует Checkstyle 9.3, подключаем актуальную версию -->
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>${checkstyle.version}</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <configLocation>checkstyle.xml</configLocation>
+                    <inputEncoding>UTF-8</inputEncoding>
+                    <consoleOutput>true</consoleOutput>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                    <violationSeverity>warning</violationSeverity>
+                    <failOnViolation>true</failOnViolation>
+                    <linkXRef>false</linkXRef>
+                </configuration>
+                <executions>
+                    <!-- Проверка также входит в mvn verify; в Jenkins запускается отдельным этапом -->
+                    <execution>
+                        <id>checkstyle-check</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -48,6 +98,16 @@
                             <mainClass>Application</mainClass>
                         </manifest>
                     </archive>
+                </configuration>
+            </plugin>
+
+            <!-- Запуск приложения вместе с зависимостями: mvn compile exec:java -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.6.4</version>
+                <configuration>
+                    <mainClass>Application</mainClass>
                 </configuration>
             </plugin>
         </plugins>

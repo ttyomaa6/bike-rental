@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC
+        "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+        "https://checkstyle.org/dtds/configuration_1_3.dtd">
+
+<!--
+    Правила статического анализа для проекта bike-rental.
+    Любое нарушение имеет уровень error, поэтому mvn checkstyle:check
+    завершается с ошибкой (BUILD FAILURE), а Jenkins останавливает Pipeline.
+-->
+<module name="Checker">
+    <property name="charset" value="UTF-8"/>
+    <property name="severity" value="error"/>
+    <property name="fileExtensions" value="java"/>
+
+    <!-- Отступы делаются пробелами, символ табуляции запрещён -->
+    <module name="FileTabCharacter"/>
+
+    <!-- Файл должен заканчиваться переводом строки -->
+    <module name="NewlineAtEndOfFile"/>
+
+    <!-- Строка не длиннее 120 символов (package и import не проверяются) -->
+    <module name="LineLength">
+        <property name="max" value="120"/>
+        <property name="ignorePattern" value="^(package|import) .*$"/>
+    </module>
+
+    <module name="TreeWalker">
+        <!-- Импорты -->
+        <module name="AvoidStarImport"/>
+        <module name="RedundantImport"/>
+        <module name="UnusedImports"/>
+
+        <!-- Соглашения об именовании -->
+        <module name="PackageName">
+            <property name="format" value="^[a-z]+(\.[a-z][a-z0-9]*)*$"/>
+        </module>
+        <module name="TypeName"/>
+        <module name="MethodName"/>
+        <module name="MemberName"/>
+        <module name="ParameterName"/>
+        <module name="LocalVariableName"/>
+        <module name="ConstantName"/>
+
+        <!-- Блоки и фигурные скобки -->
+        <module name="NeedBraces"/>
+        <module name="LeftCurly"/>
+        <module name="RightCurly"/>
+        <module name="EmptyBlock">
+            <property name="option" value="TEXT"/>
+        </module>
+
+        <!-- Пробелы -->
+        <module name="WhitespaceAround"/>
+        <module name="WhitespaceAfter"/>
+        <module name="NoWhitespaceBefore"/>
+        <module name="MethodParamPad"/>
+        <module name="ParenPad"/>
+
+        <!-- Отступ 4 пробела, перенос строки — минимум 4 -->
+        <module name="Indentation">
+            <property name="basicOffset" value="4"/>
+            <property name="caseIndent" value="4"/>
+            <property name="lineWrappingIndentation" value="4"/>
+        </module>
+
+        <!-- Оформление конструкций -->
+        <module name="OneStatementPerLine"/>
+        <module name="MultipleVariableDeclarations"/>
+        <module name="ModifierOrder"/>
+        <module name="UpperEll"/>
+        <module name="ArrayTypeStyle"/>
+
+        <!-- Потенциальные ошибки -->
+        <module name="EmptyStatement"/>
+        <module name="EqualsHashCode"/>
+        <module name="SimplifyBooleanExpression"/>
+        <module name="SimplifyBooleanReturn"/>
+        <module name="MissingSwitchDefault"/>
+
+        <!-- Вывод через Logger, а не через System.out / System.err -->
+        <module name="RegexpSinglelineJava">
+            <property name="id" value="noSystemOut"/>
+            <property name="format" value="System\.(out|err)\.print"/>
+            <property name="ignoreComments" value="true"/>
+            <property name="message" value="Используйте Logger (SLF4J) вместо System.out/System.err"/>
+        </module>
+    </module>
+</module>

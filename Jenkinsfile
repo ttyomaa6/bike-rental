@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    options {
+        // Checkout выполняется явным этапом ниже
+        skipDefaultCheckout()
+    }
+
     parameters {
         booleanParam(
             name: 'RUN_CONDITIONAL',
@@ -10,9 +15,27 @@ pipeline {
     }
 
     stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+                sh 'git log -1 --oneline'
+            }
+        }
+
         stage('Build') {
             steps {
                 sh 'mvn compile'
+            }
+        }
+
+        stage('Static Analysis') {
+            steps {
+                sh 'mvn checkstyle:check'
+            }
+            post {
+                always {
+                    archiveArtifacts artifacts: 'target/checkstyle-result.xml', allowEmptyArchive: true
+                }
             }
         }
 
